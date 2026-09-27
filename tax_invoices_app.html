@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق الفواتير الضريبية | Tax Invoices App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2b6cb0;
+            --primary-hover: #2c5282;
+            --secondary-color: #319795;
+            --background-color: #f7fafc;
+            --card-background: #ffffff;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --success-color: #38a169;
+            --danger-color: #e53e3e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        .btn-success:hover {
+            background-color: #2f855a;
+        }
+
+        /* Invoice Preview Styles */
+        .invoice-preview {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            position: relative;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #3182ce;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .company-details h3 {
+            color: #3182ce;
+            font-size: 20px;
+        }
+
+        .invoice-title {
+            text-align: left;
+        }
+
+        .invoice-title h2 {
+            color: #2d3748;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .invoice-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .invoice-table th {
+            background-color: #3182ce;
+            color: white;
+            padding: 8px;
+            text-align: right;
+            font-size: 13px;
+        }
+
+        .invoice-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .invoice-summary {
+            width: 50%;
+            margin-right: auto;
+            margin-left: 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-weight: bold;
+            font-size: 16px;
+            border-top: 2px solid #3182ce;
+            padding-top: 10px;
+            color: #2b6cb0;
+        }
+
+        .print-btn-container {
+            margin-top: 20px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .invoice-preview, .invoice-preview * {
+                visibility: visible;
+            }
+            .invoice-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                padding: 0;
+            }
+            .print-btn-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>نظام إنشاء الفواتير الضريبية المبسطة</h1>
+        <p>قم بإدخال بيانات الفاتورة لتوليدها وحساب ضريبة القيمة المضافة (VAT) تلقائياً</p>
+    </header>
+
+    <div class="grid">
+        <!-- Form Panel -->
+        <div class="card">
+            <h2>📝 بيانات الفاتورة</h2>
+            
+            <div class="form-group">
+                <label>اسم المنشأة / البائع</label>
+                <input type="text" id="sellerName" value="شركة مؤسسة الأعمال المحدودة" oninput="updateInvoice()">
+            </div>
+            
+            <div class="row">
+                <div class="form-group">
+                    <label>الرقم الضريبي (الرقم المميز)</label>
+                    <input type="text" id="sellerTaxNum" value="300000000000003" oninput="updateInvoice()">
+                </div>
+                <div class="form-group">
+                    <label>رقم الفاتورة</label>
+                    <input type="text" id="invoiceNum" value="INV-2026-001" oninput="updateInvoice()">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>تاريخ الفاتورة</label>
+                    <input type="date" id="invoiceDate" oninput="updateInvoice()">
+                </div>
+                <div class="form-group">
+                    <label>نسبة ضريبة القيمة المضافة</label>
+                    <select id="vatRate" onchange="updateInvoice()">
+                        <option value="0.15" selected>15% (الأساسية)</option>
+                        <option value="0.05">5%</option>
+                        <option value="0">0% (معفاة/صفرية)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin: 15px 0; border-top: 1px dashed var(--border-color); padding-top: 15px;">
+                <label style="font-weight: bold; color: var(--secondary-color);">📦 تفاصيل السلعة / الخدمة</label>
+                <div class="form-group">
+                    <label>وصف الخدمة أو السلعة</label>
+                    <input type="text" id="itemName" value="تقديم خدمات استشارية وتقنية" oninput="updateInvoice()">
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>السعر (غير شامل الضريبة)</label>
+                        <input type="number" id="itemPrice" value="1000" min="0" step="any" oninput="updateInvoice()">
+                    </div>
+                    <div class="form-group">
+                        <label>الكمية</label>
+                        <input type="number" id="itemQty" value="1" min="1" oninput="updateInvoice()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>اسم العميل (اختياري)</label>
+                <input type="text" id="buyerName" value="مؤسسة العميل الراقية" oninput="updateInvoice()">
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div>
+            <div class="invoice-preview" id="invoiceArea">
+                <div class="invoice-header">
+                    <div class="company-details">
+                        <h3 id="p-sellerName">شركة مؤسسة الأعمال المحدودة</h3>
+                        <p style="font-size: 12px; color: #718096;">الرقم الضريبي: <span id="p-sellerTaxNum">300000000000003</span></p>
+                    </div>
+                    <div class="invoice-title">
+                        <h2>فاتورة ضريبية</h2>
+                        <p style="font-size: 12px; color: #718096; text-align: left;">Tax Invoice</p>
+                    </div>
+                </div>
+
+                <div class="invoice-meta">
+                    <div><strong>رقم الفاتورة:</strong> <span id="p-invoiceNum">INV-2026-001</span></div>
+                    <div><strong>تاريخ الإصدار:</strong> <span id="p-invoiceDate">-</span></div>
+                    <div class="buyer-info" style="grid-column: span 2;">
+                        <strong>العميل:</strong> <span id="p-buyerName">مؤسسة العميل الراقية</span>
+                    </div>
+                </div>
+
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th>البيان / الوصف</th>
+                            <th style="width: 15%; text-align: center;">الكمية</th>
+                            <th style="width: 20%; text-align: left;">سعر الوحدة</th>
+                            <th style="width: 20%; text-align: left;">الإجمالي (خاضع للضريبة)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="p-itemName">تقديم خدمات استشارية وتقنية</td>
+                            <td style="text-align: center;" id="p-itemQty">1</td>
+                            <td style="text-align: left;" id="p-itemPrice">1000.00 ر.س</td>
+                            <td style="text-align: left;" id="p-subtotal">1000.00 ر.س</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="invoice-summary">
+                    <div class="summary-row">
+                        <span>المجموع الخاضع للضريبة:</span>
+                        <span id="p-sumSubtotal">1000.00 ر.س</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>ضريبة القيمة المضافة (<span id="p-vatRatePct">15</span>%):</span>
+                        <span id="p-vatAmount">150.00 ر.س</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>الإجمالي المستحق:</span>
+                        <span id="p-totalAmount">1150.00 ر.س</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="print-btn-container">
+                <button class="btn btn-success" onclick="window.print()">🖨️ طباعة الفاتورة أو حفظها كـ PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set today's date automatically
+    document.getElementById('invoiceDate').valueAsDate = new Date();
+
+    function updateInvoice() {
+        // Fetch values
+        const sellerName = document.getElementById('sellerName').value || '-';
+        const sellerTaxNum = document.getElementById('sellerTaxNum').value || '-';
+        const invoiceNum = document.getElementById('invoiceNum').value || '-';
+        const invoiceDate = document.getElementById('invoiceDate').value || '-';
+        const buyerName = document.getElementById('buyerName').value || 'عميل نقدي';
+        
+        const itemName = document.getElementById('itemName').value || '-';
+        const itemPrice = parseFloat(document.getElementById('itemPrice').value) || 0;
+        const itemQty = parseInt(document.getElementById('itemQty').value) || 1;
+        const vatRate = parseFloat(document.getElementById('vatRate').value);
+
+        // Calculations
+        const subtotal = itemPrice * itemQty;
+        const vatAmount = subtotal * vatRate;
+        const total = subtotal + vatAmount;
+
+        // Push to DOM preview
+        document.getElementById('p-sellerName').innerText = sellerName;
+        document.getElementById('p-sellerTaxNum').innerText = sellerTaxNum;
+        document.getElementById('p-invoiceNum').innerText = invoiceNum;
+        document.getElementById('p-invoiceDate').innerText = invoiceDate;
+        document.getElementById('p-buyerName').innerText = buyerName;
+        
+        document.getElementById('p-itemName').innerText = itemName;
+        document.getElementById('p-itemQty').innerText = itemQty;
+        document.getElementById('p-itemPrice').innerText = itemPrice.toFixed(2) + ' ر.س';
+        document.getElementById('p-subtotal').innerText = subtotal.toFixed(2) + ' ر.س';
+        
+        document.getElementById('p-sumSubtotal').innerText = subtotal.toFixed(2) + ' ر.س';
+        document.getElementById('p-vatRatePct').innerText = (vatRate * 100).toFixed(0);
+        document.getElementById('p-vatAmount').innerText = vatAmount.toFixed(2) + ' ر.س';
+        document.getElementById('p-totalAmount').innerText = total.toFixed(2) + ' ر.س';
+    }
+
+    // Initialize display values on load
+    updateInvoice();
+</script>
+
+</body>
+</html>
